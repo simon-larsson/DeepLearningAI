@@ -2,15 +2,138 @@
 | 0. Shallow Neural Network
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
-	Forward propagation through layers
-	-	Layer 1:		Z[1] = W[1]*X[1] + b[1]
-						A[1] = sigmoid(Z[1])
+	NEURAL NETWORKS
+
+	Layers
+	-	Input layer		-	The inputs from the dataset X, also called layer 0 and is not counted in the total number of layers
+	-	Output layer	-	responsible for generating the predicted value Y_hat / A[i]
+	-	Hidden layer	-	intermediate layers with parameters not directly visible in the dataset
+
+
+	Denoting individual units in a layer
+	-	z[1](2)	 	= Calculated weight and biases of the second unit in the first layer
+	-	a[2](1) 		= Calculated activation of the first unit in the second layer
+	
+	
+	Example network: Input layer = 3 units / hidden layer = 4 units / output layer = 1 unit
+	-	Input layer:	x(1)
+							x(2)
+							x(3)
+		
+	-	Hidden layer:	z[1](1) = w[1](1).T*X + b[1](1), 	a[1](1) = g(z[1](1))
+							z[1](2) = w[1](2).T*X + b[1](2), 	a[1](2) = g(z[1](2))
+							z[1](3) = w[1](3).T*X + b[1](3), 	a[1](3) = g(z[1](3))
+							z[1](4) = w[1](4).T*X + b[1](4), 	a[1](4) = g(z[1](4))
+							
+	- Output layer:	z[2] 	= w[2].T*A[1] + b[2], a[2]/y_hat = g(z[2])
+	
+	
+	Matrix notation:
+	
+	-	X	 = 	|	x(1)	x(2)		...	x(m)	|		Where each row is one of the nx features
+					|	x(1)	x(2)		...	x(m)	|
+					|	...	...		...	... 	|		
+					|	x(1)	x(2)		...	x(m) 	|
+	
+	-	Z[i] = 	|	z[1](1)	z[1](2)		...	z[1](m)	|		where i is the number of units
+					|	z[2](1)	z[2](2)		...	z[2](m) 	|
+					|	...		...	  	  	...	... 		|		
+					|	z[i](1)	z[i](2)		...	z[i](m) 	|
+					
+	-	A[i] = 	|	a[1](1)	a[1](2)		...	a[1](m)	|		where i is the number of units
+					|	a[2](1)	a[2](2)		...	a[2](m) 	|
+					|	...		...	  	  	...	... 		|		
+					|	a[i](1)	a[i](2)		...	a[i](m) 	|
+	
+	
+	Forward propagation through layers (vectorized)
+	-	Layer 1:		Z[1] = W[1]*X + b[1]				where X = A[0]
+						A[1] = g(Z[1])
 	
 		Layer 2:		Z[2] = W[2]*A[1] + b[2]
-						A[2] = sigmoid(Z[2])
+						A[2] = g(Z[2])
 						...
-		Layer i:		Z[i] = W[i]*A[i-1] + b[i]
-						A[i] = sigmoid(Z[i])
-						L(A[i], Y) = -(1/m)*sum((Y*log(A[i].T)) + (1 - Y)*log(1 - A[i].T)) 
+		Layer l:		Z[l] = W[l]*A[l-1] + b[l]
+						A[l] = g(Z[l])						where A[l] = Y_hat
+						
+			
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+	ACTIVATION FUNCTIONS
+			
+	Activation functions
+	-	Activation functions are denoted g(z)
+	-	It's non-linear function where the sigmoid function is just one example
+	-	One function that is almost always better than sigmoid is a = tanh(z) or a = (exp(z) - exp(-z))/(exp(z) + exp(-z))
+	-	Activation function function for the output layer is special since it can prepare for the desired output
+	-	ReLU is also a common activation function and is defined as a = max(0, z)
+						
+						
+	Activation function breakdown
+	-	Sigmoid		-	should never be used unless it is in the last layer and the output should be 0-1
+	-	Tanh			-	superior version alternative to sigmoid except the example above
+	-	ReLU			-	the most popular function for hidden layers, learns faster than the above because of derivatives never being close to 0
+	-	LeakyReLU	-	same as ReLU but with a small slope for negative values where regular ReLU has derivative that is 0
+	
+	
+	Purpose of activation functions
+	-	Without non-linear functions between layers the output will always be a linear function regardless of the number of layers
+	-	All hidden layers would be pointless
+	-	A linear activation function can be used in the output layer for regression problems
+	
+	Derivatives of activation functions
+	-	Sigmoid		- g(z) = 1/(1 + exp(-z))									dg/dz = (1 + exp(-1))*(1 - (1 + exp(-1)))
+	-	Tanh			- g(z) = (exp(z) - exp(-z))/(exp(z) + exp(-z))		dg/dz = 1 - (1 + exp(-1))*(1 - (1 + exp(-1)))^2
+	-	ReLU			- g(z) = max(0, z)											dg/dz = 0 if z < 0, 		1 if z > 0, 	undefined if z = 0
+	-	Leaky ReLU	- g(z) = max(0.01*z, z)										dg/dz = 0 if z < 0.01, 	1 if z > 0, 	undefined if z = 0
+	
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+	GRADIENT DESCENT / BACKPROP
+	
+	Parameters
+	-	W[i]	-	Dimension = (n[i] x n[i - 1])
+	-	b[i] 	-	Dimension = (n[i] x 1)
+	
+	
+	Gradient descent
+	-	dW[i]	= dJ/dW[i]
+	-	db[i] = dJ/db[i]
+	-	W[i]	= W[i] - alpha*dW[i]
+	-	b[i] 	= b[i] - alpha*db[i]
+	-	J(Y_hat, Y) = -(1/m)*sum(L(Y_hat, Y))		
+	-	L(Y_hat, Y) = Y*log(Y_hat.T)) + (1 - Y)*log(1 - Y_hat.T)
+	
+	
+	Backpropagation
+	-	Output layer:	dZ[i]			= A[i] - Y
+							dW[i] 		= (1/m)*dZ[i].*A[i].T		where .* is elementwise multiplication			
+							db[i] 		= (1/m)*sum(dZ[i], axis = 1, keepdims = true)
 		
+		Last hidden:	dZ[i - 1] 	= W[i].T*dZ[i].*dg[i - 1](Z[i - 1])
+							dW[i - 1]  	= (1/m)*dZ[i - 1]*A[i - 1].T
+							db[i - 1]  	= (1/m)*sum(dZ[i - 1], axis = 1, keepdims = true)
+					
+		Intermediate					...
+					
+		First hidden:	dZ[1] 		= W[2].T*dZ[2].*dg[1](Z[1])
+							dW[1]  		= (1/m)*dZ[1]*X.T
+							db[1]  		= (1/m)*sum(dZ[1], axis = 1, keepdims = true)
+	
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+	INITIALIZATION
+	
+	Initialize with parameters=0
+	-	If W = 0 then the network becomes symmetric and all units will be identical
+	-	They will stay identical for every iteration
+	-	Network will perform same as a network with one unit per layer
+	-	b = 0 is fine
+	
+	Python initialization
+	-	W[1] = np.random.randn(units, m)*0.01		Scaling weights to a small number is faster with some activation functions (sigmoid and such)
+	-	b[1] = np.zeros(units, 1)
+	
+	
 	
