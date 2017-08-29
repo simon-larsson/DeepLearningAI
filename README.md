@@ -1,3 +1,3 @@
 # DeepLearningAI
-Notes for and code skribbles from the course. The course didn't allow putting solutions 
+Notes for and code skribbles from the deelearning.ai courses. It is not allowed to put solutions 
 on github, so sorry if you where looking for those.
