@@ -1,0 +1,68 @@
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| 0. Deep Neural Network
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+	Notation
+	-	L - number of layers with the output layer included but not the input layer
+	-	l a arbitrary layer between 1 - L
+	-	n[l] = units in layer l
+	-	n[0] = nx = inputs in input layer
+	
+
+	Matrix dimensions in neural networks
+	-	X 		= 			(nx, m)
+	-	b[l] 	= 			(n[l], m)			or (n[l], 1) but then broadcasted to (n[l], m)
+	-	W[l] 	= 			(n[l], n[l-1])		W is what matches between the different layer dims	
+	-	Z[l] 	= A[l] = (n[1], m)
+	- 	dW[l]	= W[l] = (n[l], n[l-1])
+	-	db[l] = b[l] = (n[l], m)			or (n[l], 1) but then broadcasted to (n[l], m)
+	-	dZ[l] = Z[l] = (n[1], m)
+	-	dA[l] = A[l] = (n[1], m)
+	
+	
+	Forward propagation through layers (vectorized)
+	-	Layer 1:		Z[1] = W[1]*X + b[1]				where X = A[0]
+						A[1] = g(Z[1])
+	
+		Layer 2:		Z[2] = W[2]*A[1] + b[2]
+						A[2] = g(Z[2])
+						...
+		Layer l:		Z[L] = W[L]*A[L-1] + b[L]
+						A[L] = g(Z[L])						where A[L] = Y_hat
+						
+
+	Backpropagation (vectorized)
+	-	Output layer:	dZ[L]			= A[L] - Y						where L is the number of layers
+							dW[L] 		= (1/m)*dZ[L].*A[L].T		where .* is elementwise multiplication	np.multiply		
+							db[L] 		= (1/m)*sum(dZ[L], axis = 1, keepdims = True)
+							dA[L]			= derivation of the cost function
+		
+		Last hidden:	dZ[L - 1] 	= W[L].T*dZ[L - 1].*dg[L - 1](Z[L - 1])
+							dW[L - 1]  	= (1/m)*dZ[L - 1]*A[L - 1].T
+							db[L - 1]  	= (1/m)*sum(dZ[L - 1], axis = 1, keepdims = True)
+							dA[L - 2]	= W[L - 1].T*dZ[L - 1]
+		
+		...				...			...
+		
+		Layer l:			dZ[l] 		= W[l].T*dZ[l].*dg[l](Z[l])
+							dW[l] 		= (1/m)*dZ[l].*A[l - 1].T		where .* is elementwise multiplication	np.multiply		
+							db[l] 		= (1/m)*sum(dZ[l], axis = 1, keepdims = True)
+							dA[l - 1]	= W[l].T*dZ[l]
+		
+		...				...			...
+					
+		First hidden:	dZ[1] 		= W[2].T*dZ[2].*dg[1](Z[1])
+							dW[1]  		= (1/m)*dZ[1]*X.T
+							db[1]  		= (1/m)*sum(dZ[1], axis = 1, keepdims = True)
+							
+							
+	Forward propagation <-> back propagation
+	- Forward 	Input:	A[l - 1], 
+					Output: 	A[l]
+					Cache:	Z[l] 	(for backprop)
+					
+	- Back:		Input: 	dA[l], Z[l]
+					Output:	dA[l-1], dW[l], dB[l]
+						
+						
+
