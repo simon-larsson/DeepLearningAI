@@ -6,7 +6,7 @@
 
 	Layers
 	-	Input layer		-	The inputs from the dataset X, also called layer 0 and is not counted in the total number of layers
-	-	Output layer	-	responsible for generating the predicted value Y_hat / A[i]
+	-	Output layer	-	responsible for generating the predicted value Y_hat / A[L]
 	-	Hidden layer	-	intermediate layers with parameters not directly visible in the dataset
 
 
@@ -35,12 +35,12 @@
 					|	...	...		...	... 	|		
 					|	x(1)	x(2)		...	x(m) 	|
 	
-	-	Z[i] = 	|	z[1](1)	z[1](2)		...	z[1](m)	|		where i is the number of units
+	-	Z[i] = 	|	z[1](1)	z[1](2)		...	z[1](m)	|		where i is n[l], the number of units
 					|	z[2](1)	z[2](2)		...	z[2](m) 	|
 					|	...		...	  	  	...	... 		|		
 					|	z[i](1)	z[i](2)		...	z[i](m) 	|
 					
-	-	A[i] = 	|	a[1](1)	a[1](2)		...	a[1](m)	|		where i is the number of units
+	-	A[i] = 	|	a[1](1)	a[1](2)		...	a[1](m)	|		where i is n[l], the number of units
 					|	a[2](1)	a[2](2)		...	a[2](m) 	|
 					|	...		...	  	  	...	... 		|		
 					|	a[i](1)	a[i](2)		...	a[i](m) 	|
@@ -53,8 +53,8 @@
 		Layer 2:		Z[2] = W[2]*A[1] + b[2]
 						A[2] = g(Z[2])
 						...
-		Layer l:		Z[l] = W[l]*A[l-1] + b[l]
-						A[l] = g(Z[l])						where A[l] = Y_hat
+		Layer l:		Z[L] = W[L]*A[L-1] + b[L]
+						A[L] = g(Z[L])						where A[L] = Y_hat
 						
 			
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -92,33 +92,33 @@
 	GRADIENT DESCENT / BACKPROP
 	
 	Parameters
-	-	W[i]	-	Dimension = (n[i] x n[i - 1])
-	-	b[i] 	-	Dimension = (n[i] x 1)
+	-	W[l]	-	Dimension = (n[l] x n[l - 1])
+	-	b[l] 	-	Dimension = (n[l] x 1)
 	
 	
 	Gradient descent
-	-	dW[i]	= dJ/dW[i]
-	-	db[i] = dJ/db[i]
-	-	W[i]	= W[i] - alpha*dW[i]
-	-	b[i] 	= b[i] - alpha*db[i]
+	-	dW[l]	= dJ/dW[l]
+	-	db[l] = dJ/db[l]
+	-	W[l]	= W[l] - alpha*dW[l]
+	-	b[l] 	= b[l] - alpha*db[l]
 	-	J(Y_hat, Y) = -(1/m)*sum(L(Y_hat, Y))		
 	-	L(Y_hat, Y) = Y*log(Y_hat.T)) + (1 - Y)*log(1 - Y_hat.T)
 	
 	
 	Backpropagation
-	-	Output layer:	dZ[i]			= A[i] - Y
-							dW[i] 		= (1/m)*dZ[i].*A[i].T		where .* is elementwise multiplication			
-							db[i] 		= (1/m)*sum(dZ[i], axis = 1, keepdims = true)
+	-	Output layer:	dZ[L]			= A[L] - Y						where L is the number of layers
+							dW[L] 		= (1/m)*dZ[L].*A[L].T		where .* is elementwise multiplication	np.multiply		
+							db[L] 		= (1/m)*sum(dZ[L], axis = 1, keepdims = True)
 		
-		Last hidden:	dZ[i - 1] 	= W[i].T*dZ[i].*dg[i - 1](Z[i - 1])
-							dW[i - 1]  	= (1/m)*dZ[i - 1]*A[i - 1].T
-							db[i - 1]  	= (1/m)*sum(dZ[i - 1], axis = 1, keepdims = true)
+		Last hidden:	dZ[L - 1] 	= W[L].T*dZ[1].*dg[L - 1](Z[L - 1])
+							dW[L - 1]  	= (1/m)*dZ[L - 1]*A[L - 1].T
+							db[L - 1]  	= (1/m)*sum(dZ[L - 1], axis = 1, keepdims = True)
 					
 		Intermediate					...
 					
 		First hidden:	dZ[1] 		= W[2].T*dZ[2].*dg[1](Z[1])
 							dW[1]  		= (1/m)*dZ[1]*X.T
-							db[1]  		= (1/m)*sum(dZ[1], axis = 1, keepdims = true)
+							db[1]  		= (1/m)*sum(dZ[1], axis = 1, keepdims = True)
 	
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -132,8 +132,8 @@
 	-	b = 0 is fine
 	
 	Python initialization
-	-	W[1] = np.random.randn(units, m)*0.01		Scaling weights to a small number is faster with some activation functions (sigmoid and such)
-	-	b[1] = np.zeros(units, 1)
+	-	W[1] = np.random.randn(n[l], n[l - 1])*0.01		Scaling weights to a small number is faster with some activation functions (sigmoid and such)
+	-	b[1] = np.zeros(n[l], 1)
 	
 	
 	
