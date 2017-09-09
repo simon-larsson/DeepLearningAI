@@ -103,6 +103,7 @@
 	-	b[l] 	= b[l] - alpha*db[l]
 	-	J(Y_hat, Y) = -(1/m)*sum(L(Y_hat, Y))		
 	-	L(Y_hat, Y) = Y*log(Y_hat.T)) + (1 - Y)*log(1 - Y_hat.T)
+	- 	J = -(1/m)*np.sum(np.dot(Y, np.log(A.T)) + np.dot(1 - Y, np.log(1 - A.T))) 
 	
 	
 	Backpropagation

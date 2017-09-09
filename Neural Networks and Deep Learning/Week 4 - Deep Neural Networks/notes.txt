@@ -63,6 +63,37 @@
 					
 	- Back:		Input: 	dA[l], Z[l]
 					Output:	dA[l-1], dW[l], dB[l]
+					
+	1. Initialize parameters / Define hyperparameters
+	2. Loop for num_iterations:
+		 a. Forward propagation
+		 b. Compute cost function
+		 c. Backward propagation
+		 d. Update parameters (using parameters, and grads from backprop) 
+	4. Use trained parameters to predict labels
 						
-						
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+	HYPERPARAMETERS
+	
+	Definition
+	-	Parameters that define higher level concepts of a model
+	-	Different from model parameters in that they cannot be learned from the data
+	
+	
+	Examples of hyperparameters
+	-	Learning rate
+	-	Iterations
+	-	Hidden layers L
+	- 	Hidden units n[l]
+	-	Choice of activation function
+	-	Momentum
+	-	Minibatch size
+	-	Regularization
+	
+	
+	Working with hyperparameters
+	-	Hyperparameters requires alot of empirical work. It is hard to know good values without testing
+	-	They are not stable, as data and other things change, so will also the best hyperparameters
 
