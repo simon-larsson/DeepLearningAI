@@ -1,0 +1,43 @@
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| 0. Setting up your Machine Learning Application
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	
+	Dataset split
+	-	The classic split is training/development(cross val)/test set in 60%/20%/20%
+	-	Still a good model for smaller training sets < 10 000
+	- 	In larger sets the dev and training set can be reduced
+	-	Example: 1 000 000 training examples can be split to 99%/1%/1%
+	
+	Bias/Variance
+	-	Bias is the model fits the data poorly
+	-	Variance is when the model is overfitted to the data set to the point where it will perform worse on a dev/test set
+	
+	Step By Step
+	1	Train the network 
+	2	Check for bias
+	3 	If bias is found, increase size of network and go to step 1
+	4	Check for high variance on the dev set
+	5	If high variance is found, if possible get more data and go to step 1
+	6 	Lastly try regularization
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| 1. Regularizing your neural network
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+		
+	L2 Regularization
+	-	The regularization term for a neural network is (lamda/2m)*sum(W.^2)
+	-	Back prop formula:	dW = (1/m)*dZ.*A.T + (lambda/m)*W
+	
+	Why does regularization reduce overfitting?
+	-	The regularization term (forbineus norm) puts extra emphasis on the weights in the cost function
+	-	Large weights get penalized
+	-	Smaller weights reduce the effect of the network which makes it less prone to overfitting
+	
+	Cost
+	-	J = sum(L(Y_hat, Y)) + (lamda/2m)*sum(W.^2)
+	
+	Dropout regularization
+	-	Dropout regularization is where you set a dropout probability on each node
+	-	At the beginning of training each node gets evaluated randomly with the probability
+	-	The selected nodes get eliminated from the network, making it simpler
