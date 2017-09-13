@@ -29,7 +29,7 @@
 	-	The regularization term for a neural network is (lamda/2m)*sum(W.^2)
 	-	Back prop formula:	dW = (1/m)*dZ.*A.T + (lambda/m)*W
 	
-	Why does regularization reduce overfitting?
+	Why does L2 regularization reduce overfitting?
 	-	The regularization term (forbineus norm) puts extra emphasis on the weights in the cost function
 	-	Large weights get penalized
 	-	Smaller weights reduce the effect of the network which makes it less prone to overfitting
@@ -41,3 +41,53 @@
 	-	Dropout regularization is where you set a dropout probability on each node
 	-	At the beginning of training each node gets evaluated randomly with the probability
 	-	The selected nodes get eliminated from the network, making it simpler
+	
+	Implementing inverted dropout
+	-	For a layer l we define keep_prob = dropout procentage	(ex: 0.80 for 80%)
+	-	D[l] = np.random.rand(A[l].shape[0], A[l].shape[0]) < keep_prob	Find out which units should be dropped
+	-	A[l] = np.multiply(A[l], D[l])												Drop units by multipling with activation functions
+	-	A[l] = np.divide(A[l], keep_prob)											Divide with keep_prob so that A still has the same scale overall
+	
+	Why does inverted dropout regularization reduce overfitting?
+	-	Will reduce the network by dropping out units
+	-	Smaller networks are less complex and therefore less prone to overfitting
+	-	Since it drops out units randomly it prevents the model from relying on one unit too much
+	-	Makes it spread out on all weights more and also decrease the overall scale of the weights
+	
+	Augmenting data
+	-	 Not really regularization but helps with the same issue, lack of data
+	-	Overfitting can be reduced with augmenting the dataset
+	-	Examples:	Adding train examples of images by using existing examples and performing manipulations (flip left/right, cropping, distort)
+	
+	Early stopping
+	-	Stopping the training iterations early
+	-	Makes the model less trained and thus less overfitted
+	-	Couples the optimzation and the regularization which makes it hard to optimize in general
+	
+	
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| 2. Setting up your optimzation problem
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+	Normalizing inputs
+	-	Subtract mean:				mu = (1/m)*sum(x(i)) 		x -> m	x := x - mu
+	-	Normalizing variance:	sigma = (1/m)*sum(x(i).^2)	x -> m	x := x/(sigma^2)
+	-	Use same mu and sigma for both training and test set
+	
+	Why normalize?
+	-	If the features have different scaling then the cost function gets distorted
+	-	Distorted cost functions train slower
+	
+	Vanishing / Exploding gradients
+	-	Very deep neural networks can sometimes get very large or small gradients which makes them slow
+	-	This is due to unbalance in the weights growing exponentially through the layers
+	
+	Weight initialization for deep networks
+	-	When handling many inputs the weights need to be smaller to keep scale since the inputs are summed up
+	-	To remedy this it is smart to make the weight initialization proportional to the number of inputs for the given layer
+	-	Formula when g is tanh:	W[l] = np.random.randn(n[l], n[l-1])*np.sqrt(1/n[l-1])	(Xaviar initialization)
+	-	Formula when g is relu:	W[l] = np.random.randn(n[l], n[l-1])*np.sqrt(2/n[l-1])
+	
+	Gradient checking
+	-	
+	
