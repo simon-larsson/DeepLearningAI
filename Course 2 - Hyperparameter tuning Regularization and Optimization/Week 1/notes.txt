@@ -86,8 +86,15 @@
 	-	When handling many inputs the weights need to be smaller to keep scale since the inputs are summed up
 	-	To remedy this it is smart to make the weight initialization proportional to the number of inputs for the given layer
 	-	Formula when g is tanh:	W[l] = np.random.randn(n[l], n[l-1])*np.sqrt(1/n[l-1])	(Xaviar initialization)
-	-	Formula when g is relu:	W[l] = np.random.randn(n[l], n[l-1])*np.sqrt(2/n[l-1])
+	-	Formula when g is relu:	W[l] = np.random.randn(n[l], n[l-1])*np.sqrt(2/n[l-1])	(He intialization)
 	
 	Gradient checking
-	-	
+	-	Used to double check that the gradients of a network is correct
+	-	Take all W[l] and b[l] and reshape them to one long vector Theta
+	-	Take all dW[l] and db[l] and reshape them to one long vector dTheta
+	-	No the cost is instead J(Theta)
+	
+	Gradient checking implementation
+	-	for :
+			dThetaApprox[i] = (J(Theta + epsilon) - J(Theta - epsilon))/epsilon
 	
