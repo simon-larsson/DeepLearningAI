@@ -42,11 +42,15 @@
 	-	At the beginning of training each node gets evaluated randomly with the probability
 	-	The selected nodes get eliminated from the network, making it simpler
 	
-	Implementing inverted dropout
+	Implementing inverted dropout for forward propagation
 	-	For a layer l we define keep_prob = dropout procentage	(ex: 0.80 for 80%)
-	-	D[l] = np.random.rand(A[l].shape[0], A[l].shape[0]) < keep_prob	Find out which units should be dropped
-	-	A[l] = np.multiply(A[l], D[l])												Drop units by multipling with activation functions
-	-	A[l] = np.divide(A[l], keep_prob)											Divide with keep_prob so that A still has the same scale overall
+		D[l] = np.random.rand(A[l].shape[0], A[l].shape[0]) < keep_prob	Find out which units should be dropped
+		A[l] = np.multiply(A[l], D[l])												Drop units by multipling with activation functions
+		A[l] = np.divide(A[l], keep_prob)											Divide with keep_prob so that A still has the same scale overall
+	
+	Implementing inverted dropout for back propagation
+   -	dA[l] = np.multiply(dA[l], D[l])          								Drop units by multipling with activation functions
+		dA[l] = np.divide(dA[l], keep_prob) 										Divide with keep_prob so that dA still has the same scale overall
 	
 	Why does inverted dropout regularization reduce overfitting?
 	-	Will reduce the network by dropping out units
@@ -92,9 +96,31 @@
 	-	Used to double check that the gradients of a network is correct
 	-	Take all W[l] and b[l] and reshape them to one long vector Theta
 	-	Take all dW[l] and db[l] and reshape them to one long vector dTheta
-	-	No the cost is instead J(Theta)
+	-	Now the cost is instead J(Theta) which can be compared with the real J to see if they are close (within ~10^-7)
 	
 	Gradient checking implementation
-	-	for :
-			dThetaApprox[i] = (J(Theta + epsilon) - J(Theta - epsilon))/epsilon
+		 parameters_values, _ 	= dictionary_to_vector(W_b_dictionary)	Make parameters into one long array
+		 grad 						= gradients_to_vector(gradients)			Make gradients from backprop into one long array
+		 num_parameters 			= parameters_values.shape[0]				Find length of parameter array
+		 J_plus 						= np.zeros((num_parameters, 1))			Dimension J+
+		 J_minus 					= np.zeros((num_parameters, 1))			Dimension J-
+		 gradapprox 				= np.zeros((num_parameters, 1))			Gradient approximation
+		 
+			 for i in range(num_parameters):												
+				  
+				  thetaplus 			= np.copy(parameters_values)													                                     
+				  thetaplus[i][0] 	= thetaplus[i][0] + epsilon   												theta+ = theta + epsilon                                 		
+				  J_plus[i], _ 		= forward_propagation(X, Y, vector_to_dictionary(thetaplus))   	Calculate forwardprop with theta-
+				  
+				  thetaminus 			= np.copy(parameters_values)                                       
+				  thetaminus[i][0] 	= thetaminus[i][0] - epsilon                                      theta+ = theta + epsilon    
+				  J_minus[i], _ 		= forward_propagation(X, Y, vector_to_dictionary(thetaminus)) 		Calculate forwardprop with theta+
+
+				  
+				  gradapprox[i] = (J_plus[i] - J_minus[i])/(2*epsilon)											gradapprox = (J+ - J-)/2epsilon
+
+			 
+			 numerator 		= np.linalg.norm(grad - gradapprox)                   
+			 denominator 	= np.linalg.norm(grad) + np.linalg.norm(gradapprox)  
+			 difference 	= numerator/denominator                               							|| grad - gradapprox ||/(|| grad || - || gradapprox ||)	
 	
