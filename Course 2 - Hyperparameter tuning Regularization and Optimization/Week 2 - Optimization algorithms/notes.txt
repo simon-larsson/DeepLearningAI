@@ -1,0 +1,103 @@
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| 0. Optimization algorithms
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	
+	Notation
+	-	X{t} stands for the t:th batch in X
+	-	Example	X = [1, 2, 3, 4], X{0} = [1, 2]
+	
+	Mini-batch gradient descent
+	-	You run batches - X{t}, Y{t} - instead of the entire training step at once
+	-	Loop over the the number of batches
+		Implement forward prop and calculate the cost where J = 1/(batch_size)*sum(L(Y{t},Y_hat{t}))
+		Implement backprop
+	
+	Cost function with mini-batch
+	-	Cost function is not neccessarely strictly decreasing
+	-	Should rather trend to decrease
+	-	Will not neccessarely converge
+	
+	Batch size
+	-	If batch size = m then it is just regular gradient descent
+	-	If batch size = 1 then it is stochastic gradient descent
+	-	Typical sizes:	64, 128, 256, 512
+	
+	Exponentially weighted averages
+	-	Hyper parameter in some training algorithms
+	-	Moving average on the training data
+	-	Smoothens the data to make it less noisy
+	- 	Example:		V0 = 0
+						V1 = 0.9*V0 + 0.1*theta1		
+						V2 = 0.9*V1 + 0.1*theta2
+						...
+						Vt = 0.9*V(t-1) + 0.1*thetan		where Vt is averaged over 10 data points
+						
+	General formula			
+	-	V(t) = beta*V(t-1) + (1-beta)*theta(t)
+	-	Where V(t) can be said to be avereging over 1/(1 - beta) data points
+	
+	Implementation
+	-	V = 0
+		repeat for all theta: 
+			{
+				V = beta*V + (1 - beta)*theta
+				next theta
+			}
+			
+	Gradient descent with momentum
+	-	Weighted averages VdW and Vdb is used to update gradient descent instead of dW and db
+	-	Smooths the step direction of gradient descent to reduce oscillations
+	-	Only useful for batch gradient descent or stochastic gradient descent since they oscillate
+	-	Implementation:	On iteration t:
+									Compute dW, db as normal
+									VdW = beta*VdW + (1 - beta)*dW
+									Vdb = beta*Vdb + (1 - beta)*db
+									W = W - alpha*VdW
+									b = b - alpha*Vdb
+									
+									
+	
+		
+	RMSprop
+	-	Implementation:	On iteration t:
+									Compute dW, db as normal
+									SdW = beta*SdW + (1 - beta)*dW.^2
+									Sdb = beta*Sdb + (1 - beta)*db.^2
+									W = W - alpha*(dW/sqrt(SdW))
+									b = b - alpha*(db/sqrt(Sdb))
+	
+	Bias correction
+	-	Momentum and RMSprop has poor averages in the beginning since the init with zero
+	- 	To avoid this bias correction is used
+	-	Vt = Vt/(1 - beta^t)
+	
+	
+	Adams optimization algorithm
+	-	Implementation:	
+			VdW = 0, SdW = 0, Vdb = 0, Sdb = 0
+			On iteration t:
+				Compute dW, db as normal
+				VdW = beta1*VdW + (1 - beta1)*dW			(Weighted average)
+				Vdb = beta1*Vdb + (1 - beta1)*db
+				SdW = beta2*SdW + (1 - beta2)*dW.^2		(RMSprop)
+				Sdb = beta2*Sdb + (1 - beta2)*db.^2
+				VdW = VdW/(1 - beta^t)						(Bias correction)
+				SdW = SdW/(1 - beta^t)						(Bias correction)
+				W = W - alpha*(VdW/(sqrt(SdW) + epsilon))
+				b = b - alpha*(Sdb/(sqrt(Sdb) + epsilon))
+				
+				
+	Recommended hyperparameters for adams
+	-	alpha:	uncertain, needs tuning
+	-	beta1:	0.9
+	-	beta2:	0.999
+	-	epsilon:	10^-8
+	
+	
+	Learning rate decay
+	- 	Since gradient descent oscillates it is good to reduce learning rate as the training progresses
+	-	Formula:			alpha = alpha0/(1 + decay_rate*epoch)	gradually reduce alpha
+	-	Alternative:	alpha = alpha0*decay_rate^epoch			exponential decay
+	-	Alternative:	alpha = alpha0*k/(sqrt(epoch))
+	-	Alternative:	alpha = alpha0*k/(sqrt(t))		
+					
