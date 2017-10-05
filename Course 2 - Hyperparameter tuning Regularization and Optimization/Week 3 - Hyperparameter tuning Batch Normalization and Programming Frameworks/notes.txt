@@ -1,0 +1,85 @@
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| 0. Hyperparameter Tuning
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+	Common hyperparameters and importance tier (just general rule of thumb)
+	-	Tier 1:	Alpha
+	-	Tier 2:	Beta 							(~0.9)						(For momentum)
+					Hidden units
+					Mini-batch size
+	-	Tier 3:	Number of layers
+					Learning rate decay
+	-	Tier 4:	Beta1, Beta2, Epsilon 	(~0.9, ~0.99, ~10^-8)	(For Adams - rarely tuned)
+					
+					
+	Method for finding hyperparameters
+	-	For two hyperparameters - use a grid and systematically find the best combination
+	-	There is no good systematic way of finding hyperparameters when there are more than two
+	-	Instead use randomized values and test
+	
+	
+	Course to fine search process
+	- 	Find a rough estimate of good starting hyperparameters (either by randomizing or grid)
+	-	Narrow the scale on the search around this estimate and find new hyperparameters there
+	-	Can be done several times
+	
+	Finding a good scale
+	-	Some hyperparameters makes sense to just find the min and max values and randomize inbetween
+	-	Example:	Number of layers or hidden units
+	-	Others work better with a logaritmic scale	
+	-	Example:	Randomizing alpha between 0.0001 - 1 will give few results where the number of decimals
+					are significant. Therefore randomizing on a logaritmic scale makes more sense.
+					r = -4*np.random.rand()	=>	alpha = 10**(r)
+					
+	Hyperparameter for exponentially weighted averages
+	-	Instead if sampling beta 0.9 ... 0.999 we rather sample 1 - beta 0.1 ... 0.001 and use logaritmic scale
+	-	Example: 0.1 ... 0.001 = 10**-1 ... 10**-3, r => [-3, 1]		1 -beta = 10**r		beta = 1 - 10**r
+	
+	
+	Tuning in practice
+	-	Hyperparameters are not forever, data or algorithms change, so every once in a while it is good to reevaluate the choice of hyperparameters
+	
+	-	Babysitting one model 	- 	If you have big models and limited computation it is common to train one 
+											model and keep track as it progresses to make adjustments
+											
+	-	Parallel models			- 	If you have alot of computation power then it is good training many models 
+											in parallel and compare them
+					
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| 1. Batch Normalization
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+	Normalization of activation functions in a network
+	-	Similarly as to why it is good to normalize inputs it is also good to normalize activation functions
+	-	Formula:	mu 		= (1/m)*sum(z(i)) 								where i -> m
+					z(i)norm = (z(i) - mu)/sqrt(theta**2 + epsilon)		epsilon is to avoid dividing by zero
+					~z(i) 	= gamma*z(i)norm + beta
+	-	Beta, Gamma and Epsilon are not the same as in Momentum/Adams
+	-	Dimensions: (n[l], l), (n[l], l), (n[l], l) respectively 
+					
+					
+	Fitting Batch Norm into a NN
+	-	Calculate z(i) like always
+	-	Use it z(i) to calculate ~z(i)
+	-	Use ~z(i) to calculate a(i)
+
+	Implementation of gradient descent with Batch Norm
+	-	for t = 1..num_mini_batches
+			compute forward prop on X{t}
+				In each hidden layer use BN to replace z[l] with ~z[l]
+			use backprop to compute dW[l], dBeta[l], dGamma[l]	(db[l] is eliminated with BN since the mean is zero)
+			update parameters:	W[l] 		= W[l] - alpha*dW[l]
+										Beta[l]	= Beta[l] - alpha*dBeta[l]
+										Gamma[l]	= Gamma[l] - alpha*dBeta[l]
+				
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| 2. Multi-class classification
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| 3. Introduction to programming frameworks
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
