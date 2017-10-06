@@ -66,18 +66,46 @@
 
 	Implementation of gradient descent with Batch Norm
 	-	for t = 1..num_mini_batches
-			compute forward prop on X{t}
+			Compute forward prop on X{t}
 				In each hidden layer use BN to replace z[l] with ~z[l]
-			use backprop to compute dW[l], dBeta[l], dGamma[l]	(db[l] is eliminated with BN since the mean is zero)
-			update parameters:	W[l] 		= W[l] - alpha*dW[l]
+			Use backprop to compute dW[l], dBeta[l], dGamma[l]	(db[l] is eliminated with BN since the mean is zero)
+			Update parameters:	W[l] 		= W[l] - alpha*dW[l]
 										Beta[l]	= Beta[l] - alpha*dBeta[l]
 										Gamma[l]	= Gamma[l] - alpha*dBeta[l]
+										
+	Batch Norm intuition
+	-	As mentioned, BN helps by normalizing in the same way as with inputs, but it also has other benefits
+	-	Makes weights later in the network less affected by weights early in the neural network by avoiding accumulation due to "covariate shift"
+	-	Batch norm also has a regularzation effect by adding noise in the z(i) -> ~z(i) conversion
+	
+	
+	Batch Norm at test time
+	-	During training mu and sigma square on each batch
 				
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 | 2. Multi-class classification
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+
+	Softmax Regression
+	-	Can recognize several classes
+	-	Always has an "other" class
+	-	Notation - C = number of classes	C = n[L]
+	-	The last layer in the network is the Softmax Layer and corresponds the the number of classes (other included)
+	-	C = 2 gives logistic regression
+	-	Softmax is contrasting to hardmax where softmax gives a probability vector with values 0 - 1
+	-	Hardmax instead gives a probability vector with values either 0 or 1 (only one can be 1)
+
+	Activation function in softmax layer
+	-	t = e**(z[l])
+	-	a[l] = (e**(z[l]))/sum(t(j))	where sum j -> (C - 1)
+	
+	Example of activation function
+					| 5 |					| e**5 |																	| (e**5)/176.3 |
+	-	z[l] = 	| 2 |	 ->	t : 	| e**2 |	* sum(t(j)) =	176.3	 ->	a[l] : t/(176.3) = 	| (e**2)/176.3 |
+					|-1 |					| e**-1|																	|(e**-1)/176.3 |			
+					| 3 |					| e**3 |																	| (e**3)/176.3 |
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 | 3. Introduction to programming frameworks
