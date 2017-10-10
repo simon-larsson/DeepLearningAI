@@ -34,7 +34,8 @@
 	Hyperparameter for exponentially weighted averages
 	-	Instead if sampling beta 0.9 ... 0.999 we rather sample 1 - beta 0.1 ... 0.001 and use logaritmic scale
 	-	Example: 0.1 ... 0.001 = 10**-1 ... 10**-3, r => [-3, 1]		1 -beta = 10**r		beta = 1 - 10**r
-	
+		r = np.random.rand()
+		beta = 1-10**(- r + 1)
 	
 	Tuning in practice
 	-	Hyperparameters are not forever, data or algorithms change, so every once in a while it is good to reevaluate the choice of hyperparameters
@@ -106,8 +107,26 @@
 	-	z[l] = 	| 2 |	 ->	t : 	| e**2 |	* sum(t(j)) =	176.3	 ->	a[l] : t/(176.3) = 	| (e**2)/176.3 |
 					|-1 |					| e**-1|																	|(e**-1)/176.3 |			
 					| 3 |					| e**3 |																	| (e**3)/176.3 |
+					
+	Cost/loss function for softmax
+	-	L(y_hat,y) = -sum(y(j)*log(y_hat(j)))
+	-	J = (1/m)*sum(L(y_hat,y))
+	
+	Backprop for softmax
+	-	dJ/dz[l] = y_hat - y
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 | 3. Introduction to programming frameworks
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+	TensorFlow
+	-	Builds a computational graph using your forward prop and then automatically performs the backprop
+	-	The tf.sessions is where the built graph is run
+	-	Placeholders variables (your data) that are provided in the feed_dict used in sess.run(train, feed_dict = {x:value})
+	
+	Step by step
+	-	Create Tensors (variables) that are not yet executed/evaluated.
+	-	Write operations between those Tensors.
+	-	Initialize your Tensors.
+	-	Create a Session.
+	-	Run the Session. This will run the operations you'd written above
