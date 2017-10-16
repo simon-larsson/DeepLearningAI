@@ -1,3 +1,54 @@
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-| 0.  
+| 0.  Introduction to ML Strategy
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+	Orthogonalization
+	- Orthogonalization means that you should have different tools to reach you sub goals:
+			Goal															Tool
+		1	Fit training set well on cost function			Bigger network, other algo, etc
+		2	Fit dev set well on cost function				Regularization, bigger training set
+		3	Fit test set well on cost function				Bigger dev set
+		4	Perform well in the real world					Change dev set or cost function
+		
+	
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| 1.  Setting up your goal
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------		 
+			 
+          | pred 1 pred 0 |
+    ----------------------------			
+    act 1 |  TP       FP  |  AP			
+    act 0 |  FN       TN  |  AN			
+    ----------------------------			
+			 |	 AT		 PF  |
+		
+		
+	TP = True Positive		|	FP = False Positive												
+	TN = True Negative		|	FN = False Negative											
+	-------------------------------------------------
+	AP = Actual Positive		|	AN = Actual Negative
+	PP = Predicted Positive	|	PF = Predicted Negative
+	AP = TP + FN				|	AN = TN + FP
+	PP = TP + FP				|	PF = TF + FN
+	
+	
+	
+		  |	precision   	recall  	|	F1-score									|
+	-----|---------------------------|-----------------------------------|
+	 1   |    TP/PP      	TP/AP    |  2PrRe/(Pr + Re)  for Positive		|
+	 0   |    TN/TP      	TN/AN    |  2PrRe/(Pr + Re)  for Negative	 	|
+   -----|---------------------------|-----------------------------------|
+	avg  |    Pr     			Re       |  F1											|
+	
+	
+	Precision/Recall trade off
+	- 	The precision and recall can be used to balance an algorithm by changing the classifier limit.
+		Example: Predicting cancer, false positives are damadging and should be minimized. The classifier
+					limit is changed from 0.5 to 0.7. This will increase precision but reduce recall.
+	
+	Evaluation metrics
+	- 	Precision: 		How reliable a certian prediction is.
+	- 	Recall:			The rate at which a certain outcome is caught by our predictions.
+	-	F1-score:		Single number of how good precision/recall we have
+	
+	
