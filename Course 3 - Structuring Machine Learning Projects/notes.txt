@@ -46,9 +46,42 @@
 		Example: Predicting cancer, false positives are damadging and should be minimized. The classifier
 					limit is changed from 0.5 to 0.7. This will increase precision but reduce recall.
 	
+	
 	Evaluation metrics
 	- 	Precision: 		How reliable a certian prediction is.
 	- 	Recall:			The rate at which a certain outcome is caught by our predictions.
 	-	F1-score:		Single number of how good precision/recall we have
 	
 	
+	Dev and test set selection
+	-	Chosing a dev set is like setting up the target you aim for. So dev set and test set needs to come from the same distrubition
+	-	Test should be set no bigger than the size that gives confidence in the output, more focus on training set size
+	
+	
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| 2.  Comparing to human-level performance
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------		 
+
+	Why human-level performance?
+	-	The accuracy of a model usually is fast to reach human-lvl performance
+	-	After human-level performance the accuracy is usually harder to improve further towards the Bayes optimal error (best possible)
+	-	One reason is that humans usually are quite close to the Bayes error
+	
+	
+	Things to do while model is worse than humans:
+	-	Humans can label data to improve model
+	-	Gain insight from manual error analysis, "why did the model fail if a human succeeds?"
+	-	Better analysis of bias/variance (becomes harder when reaching levels superior to humans)
+	
+	
+	Avoidable bias and variance
+	-	A good method of improving a network is to look where it differs the most from human level performance (since it usually close to Bayes error)
+	-	The difference between the performance on the training set and human-level performance can an approximation of the bias that can be reduced
+	-	Example: 	Errors - Humans   1%, Training 8%, Dev 10%	Conclusion -  Biggest diff between human and training, reduce bias (bigger net, etc)
+	-	Example: 	Errors - Humans 7.5%, Training 8%, Dev 10%	Conclusion -  Biggest diff between training and dev, reduce variance (more data, reg, etc)
+	
+	
+	Understanding human-level error
+	-	Since human-level performance is a proxy for Bayes error it should be the best performance only
+	-	Example: If a bunch of experts have 3% error and a random person has 10% error, then human-level performance is 3%
+
