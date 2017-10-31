@@ -1,0 +1,82 @@
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| 0.  Error analysis
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+	Error analysis when you are subhuman-level performance
+	-	Example: A dog classifier with 10% error
+			1.	Get ~100 mislabeled dev set examples
+			2.	Count up home many are actually dogs (y = 1) but was labeled as not dogs (y = 0)
+			3. If there are few then the, maybe 5/100, then our error cannot be reduced much (max reduction: 10% * 5% = 0.5%)
+				If there are few then the, maybe 50/100, then we probably can reduce our error more (max reduction: 10% * 50% = 5%)
+				
+
+	Incorrect labeled data
+	-	Deep learning algorithms are quite robust to misslabeled data as long as it is random
+	-	Systematic mislabeling will reduce accuracy of the model
+	-	Decision if the mislabeling should fixed be based on:		
+			Errors due to incorrect labels
+							|----------------------| Error that can be fixed be better labeling
+			Overall dev set error
+							|----------------------| Error that cannot be fixed be better labeling
+			Errors due to other causes
+			
+			
+	Correcting incorrect dev/test set examples
+	-	Apply same process to your dev and test set to make sure they come from the same distibution
+	-	Consider examening examples got right as well as the ones it got wrong
+	-	Train and dev/test data may now come from slightly different distributions (it is still ok)
+	
+	
+	Build quickly then iterate
+	-	Set up dev/test set and metric
+	-	Use bias/variance and error analysis to prioritize the steps
+	
+	
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| 1.  Mismatched training and dev/test set
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+	Training and testing on different distibutions
+	-	If you have different kinds of data and you only need to do well on one it is important that that data is in the dev/test set
+	-	Even thought the training set will come from a different distribution it is still preferable since you "aim" better
+	
+	
+	Bias and variance with mismatched data distibutions
+	-	If the train/dev set comes from different distributions then the normal conclusions does not apply
+	-	Example: 1% train error and 10% dev error is usually high variance but if we have different distributions then the dev set might just be "harder"
+	- 	To check this you usually split the training set so you get a training-dev set on which you can verify your model on the same distibution
+	
+	
+	Example using training-dev set
+	-	Example 1: 		HLP: 0~ 	Train error: 1%	Train-dev error: 9%	Dev error: 10%		Conclusion: High variance since the error gap exist on the same distibution
+	-	Example 2: 		HLP: 0~ 	Train error: 1%	Train-dev error: 2%	Dev error: 10%		Conclusion: Data mismatch, the dev set is harder or the difference in distributions makes the model less good
+	-	Example 3: 		HLP: 0~ 	Train error: 9%	Train-dev error: 10%	Dev error: 5%		Conclusion: Data mismatch, the dev set is easier than training set
+	-	Example 4: 		HLP: 0~ 	Train error: 10%	Train-dev error: 11%	Dev error: 12%		Conclusion: High bias, avoidable bias since humans perform way better
+	
+	
+	Measurements in terms of errors
+	-	Human level performance
+					|----------------> Avoidable bias
+		Training set error
+					|----------------> Variance
+		Train-dev set error
+					|----------------> Distribution mismatch
+		Dev set error
+					|----------------> Degree of overfitting to dev set
+		Test set error
+		
+		
+	Addressing data mismatch
+	-	Carry out error analysis to try to understand difference between training and dev/test set
+	-	Make training data more similar; or collect data similar to dev/test set
+
+	
+	Artificial data synthesis
+	-	To get more data traning data that is similar to dev/test set artificial data synthesis can be applied
+	-	Example: If dev/test is noisy and traning set is clean then some noise can be added ontop of the training data
+	-	Warning:	The model can be overfitted to the noise which might not be the same as the dev/test noise
+	
+	
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| 2.  Learning from multiple tasks
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

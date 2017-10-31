@@ -85,3 +85,18 @@
 	-	Since human-level performance is a proxy for Bayes error it should be the best performance only
 	-	Example: If a bunch of experts have 3% error and a random person has 10% error, then human-level performance is 3%
 
+	Surpassing human-level performance
+	-	Once the model gets better than human-level performance the task of improving is hard to do methodically
+	-	There are exceptions, usually when humans perform poorly such as recommendations, large input models, statstical patterns, etc.
+	
+	Assumptions of supervised learning
+	-	1. That you can fit the training set pretty well (avoidable bias)
+	-	2. The training set performance generalizes pretty well to the dev/test set
+	
+	Improving your performance
+		Human-level
+			|-------------| Avoidable bias |----> Bigger NN, Train longer, better algo, change hyperparam, different NN-architecture (RNN, CNN, etc)
+		Training error
+			|-------------| Variance		 |----> More data, regularization, change hyperparam, different NN-architecture (RNN, CNN, etc) 		
+		Dev error
+		
