@@ -75,8 +75,45 @@
 	-	To get more data traning data that is similar to dev/test set artificial data synthesis can be applied
 	-	Example: If dev/test is noisy and traning set is clean then some noise can be added ontop of the training data
 	-	Warning:	The model can be overfitted to the noise which might not be the same as the dev/test noise
-	
+
 	
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 | 2.  Learning from multiple tasks
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+	Transfer learning
+	-	When a model is trained for one task then it might be possible to quickly adapt that model to for other tasks
+	-	Can for instance be done by changing the later layers, reinitializing weights for those layers and retraining with new data set
+	-	Example: Image recognition model can be "transfer learned" to an image radiology diagnosis model
+	
+	Multi-task learning
+	-	One model can be used to train for several outputs at once
+	-	Example: A model that detects precence of cars, traffic lights and signs for a self driving car
+	-	Cost: 	(1/m)*sum1(sum2(L(y_hat, y))) where sum1 i -> m and sum2 j -> num_of_outputs
+	-	Differs from softmax in that softmax is mutually exclusive for all outputs, only one at a time
+	
+	When multi-task learning makes sense
+	-	Traning on a set of tasks that could benefit from having shared low-level features (such a image recognition)
+	-	Usually: Amount of data for each task is quite similar
+	-	Can train a big enough network to do well on all the tasks
+	
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| 3.  End-to-end machine learning
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+	End-to-end ML
+	-	End-to-end is when several subtasks in a pipeline is solved by one monolithic network
+	-	Example: A voice-to-transcript model can have several subtasks (audio -> features -> phonemes -> words -> transcript) or with end-to-end (audio -> transcript)
+	-	What is best depends on the given task:
+			Does data exist and does it get better from dividing it into subtasks?
+			
+	Pros and cons of end-to-end learning
+	-	Pros:
+			Lets the data speak without being interpreted by humans
+			Less hand-designing of components needed
+	-	Cons:
+			May need large amount of data
+			Excludes potentially useful hand-designed components
+		
+	
+	
