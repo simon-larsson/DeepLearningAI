@@ -29,6 +29,7 @@
 	
 	Build quickly then iterate
 	-	Set up dev/test set and metric
+	-	Build your initial system quick and simple
 	-	Use bias/variance and error analysis to prioritize the steps
 	
 	
@@ -48,10 +49,10 @@
 	
 	
 	Example using training-dev set
-	-	Example 1: 		HLP: 0~ 	Train error: 1%	Train-dev error: 9%	Dev error: 10%		Conclusion: High variance since the error gap exist on the same distibution
-	-	Example 2: 		HLP: 0~ 	Train error: 1%	Train-dev error: 2%	Dev error: 10%		Conclusion: Data mismatch, the dev set is harder or the difference in distributions makes the model less good
-	-	Example 3: 		HLP: 0~ 	Train error: 9%	Train-dev error: 10%	Dev error: 5%		Conclusion: Data mismatch, the dev set is easier than training set
-	-	Example 4: 		HLP: 0~ 	Train error: 10%	Train-dev error: 11%	Dev error: 12%		Conclusion: High bias, avoidable bias since humans perform way better
+	-	Example 1: 		HLP: 0~ 	Train error: 1%	Train-dev error: 9%		Dev error: 10%		Conclusion: High variance since the error gap exist on the same distibution
+	-	Example 2: 		HLP: 0~ 	Train error: 1%	Train-dev error: 2%		Dev error: 10%		Conclusion: Data mismatch, the dev set is harder or the difference in distributions makes the model less good
+	-	Example 3: 		HLP: 0~ 	Train error: 9%	Train-dev error: 10%		Dev error: 5%		Conclusion: Data mismatch, the dev set is easier than training set
+	-	Example 4: 		HLP: 0~ 	Train error: 10%	Train-dev error: 11%		Dev error: 12%		Conclusion: High bias, avoidable bias since humans perform way better
 	
 	
 	Measurements in terms of errors
@@ -73,7 +74,7 @@
 	
 	Artificial data synthesis
 	-	To get more data traning data that is similar to dev/test set artificial data synthesis can be applied
-	-	Example: If dev/test is noisy and traning set is clean then some noise can be added ontop of the training data
+	-	Example: If dev/test is noisy and training set is clean then some noise can be added ontop of the training data
 	-	Warning:	The model can be overfitted to the noise which might not be the same as the dev/test noise
 
 	
