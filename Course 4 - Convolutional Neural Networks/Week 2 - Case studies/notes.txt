@@ -1,6 +1,68 @@
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-| 0.  Introduction
+| 0.  Case Studies
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-	Computer vision
-	-	Example applications: Image classification, object detection, art
+	ResNet - Residual networks
+	- 	Used for very deep networks
+	- 	Built with residual blocks
+	- 	Midigates vanishing/exploding gradient with skip connections
+	- 	Some activation outputs gets forwarded further down the network
+	-	Usually every second layer is fed forward
+	-	Opposite to a "residual network" is the standard "plain network"
+	- 	For the skip connections it is much easier if same dimensions are used in the layers
+	
+	
+	Example:
+		The activation function is feed further down in the network 
+		a[l] -\-> linear -> RelU -> a[l+1] -> linear -/-> RelU -> a[l+2]
+				 \-------------------------------------/
+		Which gives: a[l+2] = RelU(z[l+2] + a[l]) instead of the normal a[l+2] = RelU(z[l+2])
+		
+	Example with differing dimensions:
+		When the dimensions differ then a extra weight matrix is added that corrects the dimensions
+		This is usually called Ws. It can both the learned or fixed
+		a[l] -\-> linear -> RelU -> a[l+1] -> linear -/-> RelU -> a[l+2]
+				 \-------------------------------------/
+		Which gives: a[l+2] = RelU(z[l+2] + a[l]) instead of the normal a[l+2] = RelU(z[l+2])
+	
+	
+	Why ResNets work
+	-	If we expand a[l+2] = g(z[l+2] + a[l])
+	-	We get a[l+2] = g(w[l+2]a[l+1] + b[l+2] + a[l])
+	-	This means that if w[1+2] and b[l+2] is close to zero then we will still have the same result
+		we had a two layers back by becoming an identity function. This makes the deep network better 
+		by ensuring that adding more layers won't hurt, worst case they will just not do anything.
+		Regular plain networks have a hard time becoming the identity function for deep layers and 
+		therefore can make the network worse
+		
+		
+	1x1 convolution (or Network in netwok)
+	-	A 1x1 convolution is something that is performed through all channels
+	-	Applying 1x1 convolution on one channel would just be a multiplication, instead it is done across all filters
+	-	Applying convolution with filter with the dimensions 1x1xnum_cannels is same as applying a fully connected layer on one index of a matrix
+	-	Can be used to shrink the number of channels if it has gotten to large to reduce computations
+	
+	
+	Example 1x1 convolution
+		28x28x192 is convolved with 32 1x1x192 convolution which produces a 28x28x32
+		The 28x28 in the first layer is fully connected with the 28x28 in the second layer and the channels have been reduced
+		
+		
+	Motivation for Inception Networks
+	-	Inception networks are networks where the several methods, such as conv with different filter or different poolings,
+		can be tried in parallell.
+	-	The different methods are applied so they get the same dimensions and are concatented together as different channels
+	-	Commonly the dimensions are adjusted with padding, othen same padding. Also settings stride to 1 is common for pooling
+	-	It is also common to use 1x1 convolutions to control channels for a inception network
+	
+	Example:
+		[28x28x192] -\\\----> 16 filter, 1x1x192 conv -> [28x28x16] --> 32 filter,  1x1x16 conv --> [28x28x32]--|
+						  \\\---> 96 filter, 1x1x192 conv -> [28x28x96] --> 128 filter, 3x3x96 conv --> [28x28x128]-| = [28x28x256]
+						   \\---> 64 filter, 1x1x192 conv --------------------------------------------> [28x28x64]--|
+							 \---> 3x3 s=1 same maxpool ----> [28x28x192] -> 32 filter,  1x1x192 conv -> [28x28x32]--|
+	
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| 1.  Practical Advice For ConvNets
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+	
