@@ -65,4 +65,10 @@
 | 1.  Practical Advice For ConvNets
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-	
+	Transfer learning
+	-	It is often much faster to download already trained weights for a network and work from there
+	- 	Example: There exist a network with a 1000 class output but you only need 10 of those. Then you can swap out the 
+		last softmax and train that layer. Keeping the old weights frozen/fixed and then initializing new weights for the 
+		output/softmax layer that tailors the network to the 10 classes.
+		
+		
