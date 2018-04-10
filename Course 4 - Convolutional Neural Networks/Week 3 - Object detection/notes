@@ -1,0 +1,46 @@
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| 0.  Detection algorithms
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+	Object localization
+	-	Localization is done with a "bounding box" which is 4 outputs in the output layer (bx, by, bh, bw)
+	-	(bx, by) are the coordinates of the middle of the box, bh and bw is the height and width respectively
+	-	It is common to normalize the image so that the top left corner is (0,0) and bottom right is (1,1)
+	
+	Example of classification with localization
+	-	This is when classification and localization is done in tandem
+	-	4 classes - 1 pedestrian, 2 car, 3 motorcycle, 4 background
+		Would have the output:			| pc | - is there an object (not background)
+										y =	| bx | - x of the object (if there is one)
+												| by | - y of the object
+												| bh | - height of the object
+												| bw | - width of the object
+												| c1 | - is it class 1 (pedestrian)
+												| c2 | - is it class 2 (car) 
+												| c3 | - is it class 3 (motorcycle)
+		Error:   If pc in the dataset is 0 then the error should only be counted on the pc when comparing predicted and actual values.
+					This because there is no point in finding height of something that does not exist, etc. If pc is 1 then error should 
+					be counted as usual.
+					
+	Landmarks
+	-	Sometimes you want the network to find some key things in an image
+	-	Example: Face recognition where the eyes, mouth and nose is outlined
+	-	Landmarks are done by labeling images with landmarks as points(x,y) and then training your network to learn them
+	
+	Object detection
+	-	
+	-	Before NNs to be able to identitfy multiple objects in one image sliding window detection is used
+	-	First a convnet is trained to detect objects in images with only one object
+	-	A images is later scanned by sliding a window and using the convnet on each window to detect objects in subcrops of the larger image
+	-	The sliding window / sub crop is then made larger and larger
+	-	Very slow and comp. heavy
+	
+	Convolutional implementation of sliding windows
+	-	Fully connected layers can be turned into conv layers
+	-	Example: Regular FC 	- 	[5x5x16] - Full connection, 400 nodes - [400] ----- Full connection, 400 nodes - [400] -----	Full connection, 4 nodes - [4]		(not conv)	
+					Conv. FC		-	[5x5x16] - 400 filter, 5x5x16 conv ---- [1x1x400] - 400 filter, 1x1x400 conv --- [1x1x400] -	4 filter, 1x1x400 conv --- [1x1x4]  (conv)
+	- 	For sliding conv, check lecture slides
+	-	Gives bad positioning for bounding boxes
+	
+	Bounding box predictions
+	-	
