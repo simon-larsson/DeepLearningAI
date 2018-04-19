@@ -21,11 +21,13 @@
 		Error:   If pc in the dataset is 0 then the error should only be counted on the pc when comparing predicted and actual values.
 					This because there is no point in finding height of something that does not exist, etc. If pc is 1 then error should 
 					be counted as usual.
-					
+			
+			
 	Landmarks
 	-	Sometimes you want the network to find some key things in an image
 	-	Example: Face recognition where the eyes, mouth and nose is outlined
 	-	Landmarks are done by labeling images with landmarks as points(x,y) and then training your network to learn them
+	
 	
 	Object detection
 	-	
@@ -35,6 +37,7 @@
 	-	The sliding window / sub crop is then made larger and larger
 	-	Very slow and comp. heavy
 	
+	
 	Convolutional implementation of sliding windows
 	-	Fully connected layers can be turned into conv layers
 	-	Example: Regular FC 	- 	[5x5x16] - Full connection, 400 nodes - [400] ----- Full connection, 400 nodes - [400] -----	Full connection, 4 nodes - [4]		(not conv)	
@@ -42,5 +45,8 @@
 	- 	For sliding conv, check lecture slides
 	-	Gives bad positioning for bounding boxes
 	
+	
 	Bounding box predictions
-	-	
+	-	Yolo - divide a image into a grid
+	-	Make your output be of size of (grid_x)x(grid_y)x(5 + num_classes) (5 is from pc, bx, by, w, bh that can be found above)
+	-	This will correspond to making a independent detection and classification for each grid
