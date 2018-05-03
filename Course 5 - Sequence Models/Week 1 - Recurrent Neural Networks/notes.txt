@@ -1,0 +1,88 @@
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| 0.  Face Recognition
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+	Face verification vs face recognition
+	- 	Verification compares only for one person while recognition it finds the person amoung a set of persons
+	-  Verfication outputs a boolean and recognition outputs a Id if the person is recognized, otherwise returns "Unrecognized"
+	
+	
+	One shot learning
+	-	One shot learning means that the model only gets only one shot at training the model
+	-	For face ver/rec to work it requires one shot learning in that only one image per person is used to compare with
+	-	To solve this the network is trained to learn a similarity function, distance(image1, image2) = degree of difference
+	
+	
+	Siamese network
+	-	Siamese network are when you run two identical networks in parallel and then combine them
+	-	Here the networks both get an image which are encoded through a CNN and then the encoding of both images are compared
+		with the norm distance(x(i), x(j))=|| f(x(i)) - f(x(j)) ||^2 where u want it to be small if it is the same person
+		
+		
+	Triplet loss function
+	-	Triplet loss is a three way function, the three components are anchor, positive and negative
+	-	Anchor is a baseline image which comparisions are made from 
+	-	Positive is an image similar to the anchor where the distance should be small
+	-	Negative is an image disimilar (but still relevant) where the distance should be high
+	-	Formula: max(||f(x(A)) - f(x(P))|| - ||f(x(A)) - f(x(N))|| + alpha, 0)
+	-	The triplets should be chosen to be hard
+	
+	
+	Face verification and binary classification
+	-	Instead of triplet loss you can instead use binary classification as output for face verification
+	-	Take formula that compares elementwise difference in the encodings from the siamese networks and then perform classification
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| 0.  Neural Style Transfer
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+	What is neural style transfer?
+	-	It is when a style of one thing is extracted and then applied to another thing
+	-	Example: A image with goth style is applied to a image of a bridge, making it a goth style themed bridge
+
+	
+	What is a CNN really learning?
+	-	Example: Check what image patches gives a high activation function for individual units in different layers 
+		Layer 1: Might focus something such as a border or/and a color preference
+		Layer 2: Might focos on patterns such as stripes, shapes, etc.
+		Layer 3: Might focus on things that have patterns (such as round things: wheels, balls, etc)
+		Layer 4: Might focus on categories such as dogs, humans, legs, cars
+		Layer 5: Might will do the same as layer 4 but just more sophisticated
+		
+		
+	Cost function
+	-	To train a network on neural transfer you use two cost functions J_content(C, G) and J_style(S, G) (C = content image, S = style image, G = generated image)
+	-	The cost functions are combined into the style cost function J = alpha*J_content + beta*J_style
+	
+	
+	Content cost function
+	-	Use a layer l to compute the content cost. l should be somewhere in the middle, not too shallow nor too deep in the network.
+	-	Use pre-trained ConvNet (E.g VGG network)
+	-	Let a[l](C) and a[l](G) be the activation of layer l on the images
+	-	If a[l](C) and a[l](G) are similar, both images have similar content
+	-	Therefor the elementwise difference on images (like in binary classification) is used
+	-	Formula: J_content(C, G) = ||a[l](C) - a[l](G)||^2
+	
+	
+	Style cost function
+	-	Style can be defined as correlation between activations across different channels
+	-	Correlation example: High correlation -> If a unit is detecting stripes in one channel then it is often detecting orange in another channel
+									Low correlation -> if a unit is detecting stripes in one channel then it has no specific trait in another channel
+	
+	Style cost function
+	-	Style matrix: a[l](i,j,k) = activation at (i, j, k) of (H, W, C). G[l] has dimensions (nc[l])x(nc[l])
+	-	G(kk')[i] = sum( sum(a[l](jk)*a[l](jk')) ) where i = 1-> nH and j = 1 -> nW
+	-	This G is then computed on both the style image and the generated image, G(S) and G(G)
+	-	J_style[l](S,G) = || G[l](S) - G[l](G) ||^2 (forbenius norm)
+	-	It give better result to use different layers to capture style
+	-	Final formula: J_style(S,G) = sum(lambda[l]*J_style[l](S,G)) where l is all layers used
+
+	
+	Combined cost function
+	-	J(G) = alpha*J_content(C,G) + beta*J_style(S,G)
+	
+	
+	Convolutions in 1D and 3D
+	-	Convolution can be applied in more dimensions than 2D
+	-	Example 1D: [14x1] ------- 3 filter, 1 stride, no padding [5x1] - [10x3]
+	-	Example 3D: [14x14x14x1] - 3 filter, 1 stride, 5x5x5x1 conv ----- [10x10x10x3]
