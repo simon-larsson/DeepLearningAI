@@ -1,88 +1,95 @@
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-| 0.  Face Recognition
+| 0.  Recurrent Neural Network
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-	Face verification vs face recognition
-	- 	Verification compares only for one person while recognition it finds the person amoung a set of persons
-	-  Verfication outputs a boolean and recognition outputs a Id if the person is recognized, otherwise returns "Unrecognized"
+	Examples of sequence data
+	-	Speech recognition / transcribing speech
+	-	Music generation
+	-	Sentiment classification - Rate move based on comments
+	-	DNA sequence analysis - Find a protein in the DNA sequence
+	-	Machine translation - Translate between languages
+	-	Name entity recognition - Pick out names in texts
 	
 	
-	One shot learning
-	-	One shot learning means that the model only gets only one shot at training the model
-	-	For face ver/rec to work it requires one shot learning in that only one image per person is used to compare with
-	-	To solve this the network is trained to learn a similarity function, distance(image1, image2) = degree of difference
+	Notation
+	-	Name entity example:
+			x: 	Harry Potter and Hermione Granger invented a new spell.
+			x<t>:  x<1>  x<2>  x<3>   x<4>    x<5>    x<6>   .  .   x<9>				
+			y:	  		1		1	  0		1		  1		 0	    0  0    0
+			Tx = 9 - (length of input sequence)		
+			Ty = 9 - (length of output sequence)
+			x(i)<t> = The t:th element in training example i:s sequence
+			
+			
+	NLP vocabulary
+	-	Working with words it is common to have a vocabulary of known words
+	-	Commersial vocabularies are around 30k words but some have over millions
+	-	Every word in a sequence is then transformed into a one hot encoding of the vocabulary
+	-	Example:
+			vocab: 			['ass', 'fuck', 'shit']
+			x:					"Oh, shit fuck!"
+			x_vocab<1>:		<UNK> (unknown word)
+			x_vocab<2>:		[0, 0, 1]
+			x_vocab<3>:		[0, 1, 0]
+			
+	
+	Problems with standard NNs for sequence data
+	-	Inputs and outputs can have different lengths in different examples
+	-	Does not share features learned across positions of texts
 	
 	
-	Siamese network
-	-	Siamese network are when you run two identical networks in parallel and then combine them
-	-	Here the networks both get an image which are encoded through a CNN and then the encoding of both images are compared
-		with the norm distance(x(i), x(j))=|| f(x(i)) - f(x(j)) ||^2 where u want it to be small if it is the same person
+	Recurrent Neural Network
+	-	Check lecture for better representation of arcitecture
+	-	Every timestep as a x<t> that outputs a y_hat<t> which then is feed to the next timestep through a activations functions
+	-	a<0> -> [x<1> -> y_hat<1>] -> a<1> -> [x<1> -> y_hat<1>] -> a<1> -> ... -> [x<Tx> -> y_hat<Ty>]
+	-	The parameters for each [x<t> -> y_hat<t>] are the same for all timesteps and is denoted Wax
+	-	a<t> = g1(Waa*a<t-1> + Wax*x<t> + ba) 	or g1(Wa[a<t-1>, x<t>] + ba)	(where g1 = tanh / sometimes RelU)
+	-	y<t> = g2(Wya*a<t> + by) 					or g2(Wy*a<t> + by)				(where g2 = sigmoid / softmax / ...)
+	
+	
+	Flow of RNNs
+	-	RNNs only uses information from earlier timesteps to make assumptions in later timesteps and not vice versa
+	-	Can be fixed with bi-directional RNNs
+	-	Example of this weakness with name recognition:
+			"Teddy Roosevelt was great"
+			"Teddy bears are great"
+			Both times the network will only have "Teddy" to work with and misses the useful information in x<2>
+			
+			
+	Backpropagation through time (RNNs)
+	-	Graph:	Check lectures
+	- 	Loss: 	L<t>(y_hat<t>, y<t>) = -y<t>*log(y_hat<t>) - (1 - y<t>)*log(1 - y_hat<t>)
+					L(y_hat, y) = sum(L<t>(y_hat<t>, y<t>)) 	where t -> Ty
 		
 		
-	Triplet loss function
-	-	Triplet loss is a three way function, the three components are anchor, positive and negative
-	-	Anchor is a baseline image which comparisions are made from 
-	-	Positive is an image similar to the anchor where the distance should be small
-	-	Negative is an image disimilar (but still relevant) where the distance should be high
-	-	Formula: max(||f(x(A)) - f(x(P))|| - ||f(x(A)) - f(x(N))|| + alpha, 0)
-	-	The triplets should be chosen to be hard
+	Types of RNNs
+	-	Many-to-many (even): 	Standard RNNs have Ty = Tx where every x<t> outputs y_hat<t>
+		Many-to-many (uneven):	Ty != Tx, x<1> -> x<2> -> ... x<Tx> -> y_hat<1> -> y_hat<2> -> ..., y_hat<Ty> (only x<Tx> output y<1> which then continues to y<Ty>)
+										e.g. when translating a sentence the word count in orignal and translated does not have to add up
+	-	Many-to-one:				Sometimes Ty = 1, e.g. when a scentence is classified (0/1) then it is only outputted with y_hat in the end
+	-	One-to-one:					A standard neural net without time component
+	-	One-to-many:				x -> y_hat<1> -> y_hat<2> -> ..., y_hat<Ty>
 	
 	
-	Face verification and binary classification
-	-	Instead of triplet loss you can instead use binary classification as output for face verification
-	-	Take formula that compares elementwise difference in the encodings from the siamese networks and then perform classification
-
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-| 0.  Neural Style Transfer
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-	What is neural style transfer?
-	-	It is when a style of one thing is extracted and then applied to another thing
-	-	Example: A image with goth style is applied to a image of a bridge, making it a goth style themed bridge
-
-	
-	What is a CNN really learning?
-	-	Example: Check what image patches gives a high activation function for individual units in different layers 
-		Layer 1: Might focus something such as a border or/and a color preference
-		Layer 2: Might focos on patterns such as stripes, shapes, etc.
-		Layer 3: Might focus on things that have patterns (such as round things: wheels, balls, etc)
-		Layer 4: Might focus on categories such as dogs, humans, legs, cars
-		Layer 5: Might will do the same as layer 4 but just more sophisticated
-		
-		
-	Cost function
-	-	To train a network on neural transfer you use two cost functions J_content(C, G) and J_style(S, G) (C = content image, S = style image, G = generated image)
-	-	The cost functions are combined into the style cost function J = alpha*J_content + beta*J_style
+	Language models and sequence generation
+	-	A language model has the task of deciding the probability of a sentence, P(sentence) 
+	-	Example: It can differentiate between two similar sounding words to see which one is most likely to be in a model
 	
 	
-	Content cost function
-	-	Use a layer l to compute the content cost. l should be somewhere in the middle, not too shallow nor too deep in the network.
-	-	Use pre-trained ConvNet (E.g VGG network)
-	-	Let a[l](C) and a[l](G) be the activation of layer l on the images
-	-	If a[l](C) and a[l](G) are similar, both images have similar content
-	-	Therefor the elementwise difference on images (like in binary classification) is used
-	-	Formula: J_content(C, G) = ||a[l](C) - a[l](G)||^2
+	Building a language model
+	-	Take a large corpus of text, and tokenize it to a dictionary
+	-	One hot encode with all words to a vector, use <UNK> token and perhaps a <EOS> token for end of sentences
+	-	Build a RNN model: 
+			y_hat<1> outputs the P(y<1> is in vocab)
+			y_hat<2> outputs the P(y<2> | y<1>)
+			...
+			y_hat<Ty> outputs the P(y<1> | ... | y<Ty>)
+			Example: "I like food" -> 	y_hat<1> = P("I")
+												y_hat<2> = P("Like" | "I")
+												y_hat<3> = P("Food" | "Like" | "I")
+												
 	
 	
-	Style cost function
-	-	Style can be defined as correlation between activations across different channels
-	-	Correlation example: High correlation -> If a unit is detecting stripes in one channel then it is often detecting orange in another channel
-									Low correlation -> if a unit is detecting stripes in one channel then it has no specific trait in another channel
-	
-	Style cost function
-	-	Style matrix: a[l](i,j,k) = activation at (i, j, k) of (H, W, C). G[l] has dimensions (nc[l])x(nc[l])
-	-	G(kk')[i] = sum( sum(a[l](jk)*a[l](jk')) ) where i = 1-> nH and j = 1 -> nW
-	-	This G is then computed on both the style image and the generated image, G(S) and G(G)
-	-	J_style[l](S,G) = || G[l](S) - G[l](G) ||^2 (forbenius norm)
-	-	It give better result to use different layers to capture style
-	-	Final formula: J_style(S,G) = sum(lambda[l]*J_style[l](S,G)) where l is all layers used
-
-	
-	Combined cost function
-	-	J(G) = alpha*J_content(C,G) + beta*J_style(S,G)
 	
 	
-	Convolutions in 1D and 3D
-	-	Convolution can be applied in more dimensions than 2D
-	-	Example 1D: [14x1] ------- 3 filter, 1 stride, no padding [5x1] - [10x3]
-	-	Example 3D: [14x14x14x1] - 3 filter, 1 stride, 5x5x5x1 conv ----- [10x10x10x3]
+	
