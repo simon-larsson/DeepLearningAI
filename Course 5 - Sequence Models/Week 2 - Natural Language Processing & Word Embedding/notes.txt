@@ -3,4 +3,35 @@
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 	Word Representation
-	-	
+	-	One hot encoding of word in to a vector lacks relationships between words
+	-	Instead you can have a feature representation for each word that contains more information
+	-	Example					Man		Woman			King			Queen			Apple			Orange	...
+								-------------------------------------------------------------------------
+					Gender	|	-1			1				-0.93			0.97			0.00			0.01		...
+					Royal		|	0.01		0.02			0.93			0.95			-0.01			0.00		...
+					Age		|	0.04		0.02			0.7			0.69			0.03			-0.02		...
+					Food		|	0.04		0.01			0.02			0.01			0.95			0.97		...
+					...		|	...		...			...			...			...			...		...
+	-	Feature representations are sometimes made into 2D for visualization with the t-SNE algorithm
+	
+	
+	Creating word embeddings with transfer learning:
+	1.	Learn word embedding from large text corpus (1-100B words)
+		(Or download pre-trained word embeddings online)
+	2.	Transfer embedding to new task with smaller training set (maybe 100k words)
+	3.	(OPTIONAL) Continue to finetune the word embeddings with new data
+
+	
+	Similarity between words / analogies
+	-	To find analogies a good methods is to substract words to see if their vector for a parallellogram
+	-	"Man is to woman what king is to [word]?" would give similar results for e_man - e_woman and e_king - e_queen
+	-	sim(e_w, e_king - e_man + e_woman) = (u.T * v)/(||u||2*||v||2)		(similarity function)
+
+
+	Embedding matrix
+	-	An example of a embedding matrix E can be seen above
+	-	Dimensions (word features x words)
+	-	Embedding matrix is multiplied with the word vector O to get the word features for a given word
+	-	E*Oj = ej which is the feature vector of a word in O
+	-	Example:	E-dimensiosn: (300x10000)	O-dimensions: (10000x1)   E*O_n-dimensions (300x1)
+					
