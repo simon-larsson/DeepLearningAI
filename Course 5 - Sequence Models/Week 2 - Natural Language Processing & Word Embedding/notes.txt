@@ -33,5 +33,62 @@
 	-	Dimensions (word features x words)
 	-	Embedding matrix is multiplied with the word vector O to get the word features for a given word
 	-	E*Oj = ej which is the feature vector of a word in O
-	-	Example:	E-dimensiosn: (300x10000)	O-dimensions: (10000x1)   E*O_n-dimensions (300x1)
-					
+	-	Example:	E-dimensions: (300x10000)	O-dimensions: (10000x1)   E*O_n-dimensions (300x1)
+		
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| 1.  Learning Word Embeddings: Word2vec & GloVe
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------		
+	
+	Skip-grams
+	-	You randomly 
+	
+	
+	Negative sampling
+	-	Find a word pair using a context and a target
+	-	Create a dataset:
+		1.	Take the kinds of pairing you want to predict. Example "orange juice"
+		2. Take k (5-20) negative examples, i.e. take words from corpus and pair with same context. "orange king"
+		3. P(y=1 | c, t) = sigmoid(theta.T*e_c) (regression)
+		
+		
+	GloVe word vectors
+	-	Count how often context and target appear in close proximity
+	
+	
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| 2.  Sentiment classification
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------		
+	
+	Sentiment classification
+	-	When a text is examined to find the overall sentiment of the text
+	-	Example:	x="The dessert was excellent"  y=Good sentiment or y = 4/5 stars
+	
+	
+	Simple sentiment classification model
+	-	Find the embedding feature vector of each individual word and average them
+	-	Feed it to a softmax or binary classifier output
+	-	Will not understand word order and not understand context
+	-	Context example:	"It lacks good service, good food and cozy atmosphere"
+	
+	
+	RNN for sentiment classification
+	-	Find the embedding feature vector of each individual word
+	-	Put them in a x<t> sequence and use softmax/binary for y<t> (many-to-one RNN)
+	-	Better at finding context
+	-	ex: a<0>-> a<1> -> a<2> -> a<3> -> softmax -> y_hat
+			   ^     ^       ^       ^ 
+			   |	   |	     |	    |
+			 e<1>   e<2>    e<3>    e<4>
+			 
+			 
+	Bais word embeddings
+	-	Sometimes you want to remove bias that exist in the real world form your word embeddings
+	-	Word embeddings can reflect gender, ethnicity, age, sexual orientation and other bias found in the training texts
+	-	Example of bias:	Find analog - Man is to Programmer as Woman is to ? -> Homemaker
+		
+	
+	Addressing bias in word embeddings (debaising)
+	1.	Identify bias direction - example on gender: avg(e_he - e_she, e_male - e_female ..., e_boy - e_girl)
+	2.	Neutralize: For every word that is not definitional, project to get rid of bias	(example doctor should be neutralized for gender)
+	3. Equalize pairs (things like grandmother and grandfather should keep their gender component)
+	
